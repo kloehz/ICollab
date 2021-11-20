@@ -1,5 +1,6 @@
+import 'package:bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:i_collab/widgets/video_player.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,63 +10,60 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late VideoPlayerController _controller;
-
-  @override
-  void initState(){
-    super.initState();
-    _controller = VideoPlayerController.network(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4')
-      ..initialize().then((_) {
-        setState(() {});
-      });
-  }
+  int _currentPage = 0;
+  final _pageController = PageController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: _controller.value.isInitialized
-          ? GestureDetector(
-            onTap:  () {
-              setState((){
-                _controller.value.isPlaying
-                  ? _controller.pause()
-                  : _controller.play();
-              });
-            },
-            child: AspectRatio(
-              aspectRatio: _controller.value.aspectRatio,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: <Widget>[
-                  VideoPlayer(_controller),
-                  VideoProgressIndicator(_controller, allowScrubbing: true),
-                ],
-              )
-            ),
-          )
-          : Container()
+      body: PageView(
+        controller: _pageController,
+        children: [
+          VideoPlayerWidget(),
+          Container(color: Colors.red),
+          Container(color: Colors.yellow),
+          Container(color: Colors.green),
+          Container(color: Colors.pink.shade900),
+        ],
+        onPageChanged: (index) {
+          setState(() => _currentPage = index);
+        }
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {
-      //     setState((){
-      //       _controller.value.isPlaying
-      //         ? _controller.pause()
-      //         : _controller.play();
-      //     });
-      //   },
-      //   child: Icon(
-      //     _controller.value.isPlaying ? Icons.pause : Icons.play_arrow
-      //   ),
-      // )
+      bottomNavigationBar: BottomBar(
+        backgroundColor: Colors.black,
+        selectedIndex: _currentPage,
+        onTap: (int index) {
+          _pageController.jumpToPage(index);
+          setState(() => _currentPage = index);
+        },
+        items: <BottomBarItem>[
+          BottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text('Inicio'),
+            activeColor: Colors.blue
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.price_change_rounded),
+            title: const Text('Busqueda'),
+            activeColor: Colors.red.shade300
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.add_rounded),
+            title: const Text('Salir'),
+            activeColor: Colors.yellow.shade700
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.message_rounded),
+            title: const Text('Favoritos'),
+            activeColor: Colors.green.shade400
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.person),
+            title: const Text('Favoritos'),
+            activeColor: Colors.green.shade400
+          ),
+        ],
+      )
     );
-  }
-
-  @override
-  void dispose(){
-    super.dispose();
-    _controller.dispose();
   }
 }
