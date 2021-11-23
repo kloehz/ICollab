@@ -1,5 +1,6 @@
 import 'package:bottom_bar/bottom_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:i_collab/pages/profile.dart';
 import 'package:i_collab/widgets/video_player.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,10 +21,10 @@ class _HomePageState extends State<HomePage> {
         controller: _pageController,
         children: [
           VideoPlayerWidget(),
-          Container(color: Colors.red),
           Container(color: Colors.yellow),
           Container(color: Colors.green),
           Container(color: Colors.pink.shade900),
+          ProfilePage(),
         ],
         onPageChanged: (index) {
           setState(() => _currentPage = index);
@@ -59,7 +60,7 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomBarItem(
             icon: const Icon(Icons.person),
-            title: const Text('Favoritos'),
+            title: const Text('Perfil'),
             activeColor: Colors.green.shade400
           ),
         ],
